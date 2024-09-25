@@ -1,12 +1,28 @@
-import { useState } from "react"
+import { useState } from "react";
 
-export default function ProductFilter(props){
-    const [value, setValue] = useState('');
+export default function ProductFilter(props) {
+  const [selectedSupplier, setSelectedSupplier] = useState("");
 
-    return (
-        <div className="mt-3 flex gap-4">
-            <input className="rounded-md bg-gray-200 p-2" value={value} onChange={(e)=>setValue(e.target.value)} placeholder="buscar"/>
-            <button className="rounded-md bg-green-200 p-2" onClick={()=>props.filter(value)}>Buscar</button>
-        </div>
-    )
+  return (
+    <div className="flex gap-4 mt-3">
+      <select
+        className="p-2 bg-gray-200 rounded-md"
+        value={selectedSupplier}
+        onChange={(e) => setSelectedSupplier(e.target.value)}
+      >
+        <option value="">Selecione um fornecedor</option>
+        {props.suppliers?.map((supplier) => (
+          <option key={supplier._id} value={supplier.nome}>
+            {supplier.nome}{" "}
+          </option>
+        ))}
+      </select>
+      <button
+        className="p-2 bg-green-200 rounded-md"
+        onClick={() => props.filter(selectedSupplier)}
+      >
+        Filtrar
+      </button>
+    </div>
+  );
 }

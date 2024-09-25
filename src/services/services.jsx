@@ -69,20 +69,67 @@ export function filterProducts(text) {
     });
 }
 
+export async function getProductInfoById(id, token) {
+  return await axios
+    .get(`${BASE_URL}/produtos/${id}`, {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      return res.data;
+    });
+}
+
 export function getProductById(id) {
   return axios.get(`https://dummyjson.com/products/${id}`).then((res) => {
     return res.data;
   });
 }
 
-export function updateProduct(product) {
+export async function updateProduct(product, token) {
   console.log(product);
-  return axios
-    .put(`https://dummyjson.com/products/${product.id}`, {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        product,
-      }),
+  return await axios
+    .put(
+      `${BASE_URL}/produtos/${product._id}`,
+      {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+      {
+        nome: product.nome,
+        preco: product.preco,
+        fornecedor: product.fornecedor,
+        url_imagem: product.url_imagem,
+        descricao: product.descricao,
+      }
+    )
+    .then((res) => res.data);
+}
+
+export async function deleteProduct(id, token) {
+  return await axios
+    .delete(`${BASE_URL}/produtos/${id}`, {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
     })
     .then((res) => res.data);
+}
+
+export async function getSuppliers(token) {
+  return await axios
+    .get(`${BASE_URL}/fornecedores`, {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      return res.data;
+    });
 }

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { createProductSchema } from "../../validations/productValidation";
-import { addProduct } from "../../services/services";
+import { addProduct, getSuppliers } from "../../services/services";
 import { useAuth } from "../../contexts/authContext";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -23,6 +23,21 @@ export default function CreateProduct() {
   });
 
   const [descricao, setDescricao] = useState("");
+  const [suppliers, setSuppliers] = useState([]);
+
+  useEffect(() => {
+    const { token } = getUserInfo();
+    const fetchSuppliers = async () => {
+      try {
+        const data = await getSuppliers(token);
+        console.log(data);
+        setSuppliers(data);
+      } catch (error) {
+        console.error("Erro ao buscar fornecedores:", error);
+      }
+    };
+    fetchSuppliers();
+  }, [getUserInfo]);
 
   const onSubmit = async (data) => {
     const { token } = getUserInfo();
@@ -80,13 +95,19 @@ export default function CreateProduct() {
           <label className="block mb-2 text-sm font-bold" htmlFor="fornecedor">
             Fornecedor
           </label>
-          <input
-            className="w-full px-3 py-2 border rounded"
+          <select
             id="fornecedor"
             name="fornecedor"
-            type="text"
+            className="w-full px-3 py-2 border rounded"
             {...register("fornecedor")}
-          />
+          >
+            <option value="">Selecione um fornecedor</option>
+            {suppliers?.map((supplier) => (
+              <option key={supplier._id} value={supplier._id}>
+                {supplier.nome}
+              </option>
+            ))}
+          </select>
           {errors.fornecedor && (
             <p className="mt-1 text-sm text-red-500">
               {errors.fornecedor.message}
